@@ -28,7 +28,6 @@ public class ArticleToNewsArticleConverter implements Converter<Article, NewsArt
         newsArticle.setDescription(article.getDescription());
 
         newsArticle.setDate(convertDate(article.getPublishedAt()));
-        System.out.println(newsArticle.getDate());
 
         String sourceName = null;
         if (article.getSource() != null) {
