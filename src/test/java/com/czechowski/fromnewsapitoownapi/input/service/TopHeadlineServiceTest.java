@@ -1,7 +1,6 @@
 package com.czechowski.fromnewsapitoownapi.input.service;
 
 import com.czechowski.fromnewsapitoownapi.input.model.TopHeadline;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,6 @@ public class TopHeadlineServiceTest {
     @Autowired
     private MockRestServiceServer server;
 
-    @Ignore
     @Test
     public void findByCountryAndCategoryTest() {
 
@@ -51,7 +49,6 @@ public class TopHeadlineServiceTest {
         assertEquals(1, topHeadline.getArticles().length);
     }
 
-    @Ignore
     @Test
     public void findByCountryAndCategory_CountryNull() {
 
@@ -68,7 +65,6 @@ public class TopHeadlineServiceTest {
         assertEquals(1,topHeadline.getArticles().length );
     }
 
-    @Ignore
     @Test
     public void findByCountryAndCategory_CountryNotCorrect() {
 
@@ -85,7 +81,6 @@ public class TopHeadlineServiceTest {
         assertEquals(0, topHeadline.getArticles().length);
     }
 
-    @Ignore
     @Test
     public void findByCountryAndCategoryCategoryNull() {
 
@@ -103,7 +98,6 @@ public class TopHeadlineServiceTest {
 
     }
 
-    @Ignore
     @Test
     public void findByCountryAndCategory_CategoryNotCorrect() {
 
@@ -119,4 +113,5 @@ public class TopHeadlineServiceTest {
         assertEquals("0", topHeadline.getTotalResults());
         assertEquals(0, topHeadline.getArticles().length);
     }
+
 }
