@@ -24,7 +24,7 @@ public class TopHeadLineToNewsConverter {
         news.setCountry(country);
         news.setCategory(category);
 
-        if (topHeadline.getArticles() != null) {
+        if (topHeadline != null && topHeadline.getArticles() != null) {
             Stream.of(topHeadline.getArticles())
                     .map(articles -> articleToNewsArticleConverter.convert(articles))
                     .collect(Collectors.toCollection(news::getResponseArticles));
