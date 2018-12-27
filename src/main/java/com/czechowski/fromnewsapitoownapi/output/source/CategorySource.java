@@ -19,4 +19,8 @@ public class CategorySource {
         categorySet.addAll(new HashSet<>(Arrays.asList(categoryTable)));
 
     }
+
+    public static Set<String> getCategorySet() {
+        return categorySet;
+    }
 }
