@@ -3,6 +3,7 @@ package com.czechowski.fromnewsapitoownapi.output.converter;
 import com.czechowski.fromnewsapitoownapi.input.model.Article;
 import com.czechowski.fromnewsapitoownapi.output.model.NewsArticle;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,6 +12,7 @@ import java.util.Date;
 /**
  * @author <a href="mailto:k.czechowski83@gmail.com">Krzysztof Czechowski</a>
  */
+@Component
 public class ArticleToNewsArticleConverter implements Converter<Article, NewsArticle> {
 
 
