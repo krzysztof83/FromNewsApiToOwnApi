@@ -7,9 +7,9 @@ import java.util.Arrays;
  */
 public class TopHeadline {
 
-    String status;
-    String totalResults;
-    Article articles[];
+    private String status;
+    private String totalResults;
+    private Article articles[];
 
     public String getStatus() {
         return status;

@@ -5,8 +5,8 @@ package com.czechowski.fromnewsapitoownapi.input.model;
  */
 public class Source {
 
-    String id;
-    String name;
+    private String id;
+    private String name;
 
     public String getId() {
         return id;

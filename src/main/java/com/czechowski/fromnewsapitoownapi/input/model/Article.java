@@ -5,14 +5,14 @@ package com.czechowski.fromnewsapitoownapi.input.model;
  */
 public class Article {
 
-    Source source;
-    String author;
-    String title;
-    String description;
-    String url;
-    String urlToImage;
-    String publishedAt;
-    String content;
+    private Source source;
+    private String author;
+    private String title;
+    private String description;
+    private String url;
+    private String urlToImage;
+    private String publishedAt;
+    private String content;
 
     public Source getSource() {
         return source;
