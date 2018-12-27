@@ -1,6 +1,7 @@
 package com.czechowski.fromnewsapitoownapi.output.model.error;
 
 import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCountryAndCategoryParameterException;
+import com.czechowski.fromnewsapitoownapi.output.source.CategorySource;
 import com.czechowski.fromnewsapitoownapi.output.source.CountrySource;
 import org.springframework.http.HttpStatus;
 
@@ -18,7 +19,7 @@ public class UnsupportedCountryAndCategoryError extends AbstractUnsupportedError
         this.message = "Unsupported country and category parameter - " + e.getCountry() + " , " + e.getCategory();
         this.debugMessage = "Try parameter from possibleCountry list and possibleCategory list";
         this.additionalInfo.put("possibleCountry", CountrySource.getCountrySet());
-        this.additionalInfo.put("possibleCategory", CountrySource.getCountrySet());
+        this.additionalInfo.put("possibleCategory", CategorySource.getCategorySet());
 
     }
 }
