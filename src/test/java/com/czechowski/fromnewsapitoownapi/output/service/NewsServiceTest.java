@@ -5,9 +5,11 @@ import com.czechowski.fromnewsapitoownapi.input.model.Source;
 import com.czechowski.fromnewsapitoownapi.input.model.TopHeadline;
 import com.czechowski.fromnewsapitoownapi.input.service.TopHeadlineService;
 import com.czechowski.fromnewsapitoownapi.output.converter.ArticleToNewsArticleConverter;
+import com.czechowski.fromnewsapitoownapi.output.converter.TopHeadLineToNewsConverter;
+import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCategoryParameterException;
+import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCountryParameterException;
 import com.czechowski.fromnewsapitoownapi.output.model.News;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -29,8 +31,6 @@ public class NewsServiceTest {
 
     private NewsService newsService;
 
-    private ArticleToNewsArticleConverter articleConverter = new ArticleToNewsArticleConverter();
-
     @Mock
     TopHeadlineService topHeadlinesService;
 
@@ -40,7 +40,7 @@ public class NewsServiceTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        newsService = new NewsServiceImpl(topHeadlinesService, articleConverter);
+        newsService = new NewsServiceImpl(topHeadlinesService, new TopHeadLineToNewsConverter(new ArticleToNewsArticleConverter()));
 
         Article[] articleTable = new Article[1];
 
@@ -65,7 +65,6 @@ public class NewsServiceTest {
         FULL_TOPHEADLINES_OBJECT.setStatus("status");
         FULL_TOPHEADLINES_OBJECT.setTotalResults("2");
         FULL_TOPHEADLINES_OBJECT.setArticles(articleTable);
-
 
     }
 
@@ -133,8 +132,7 @@ public class NewsServiceTest {
         assertEquals(EMPTY_STRING, actual.getCategory());
     }
 
-    @Ignore
-    @Test
+    @Test(expected = UnsupportedCountryParameterException.class)
     public void findByCountryAndCategoryCountryNotCorrect() {
 
         TopHeadline topHeadline = new TopHeadline();
@@ -148,8 +146,7 @@ public class NewsServiceTest {
         assertEquals(SPORTS, actual.getCategory());
     }
 
-    @Ignore
-    @Test
+    @Test(expected = UnsupportedCategoryParameterException.class)
     public void findByCountryAndCategoryCategoryNotCorrect() {
 
         TopHeadline topHeadline = new TopHeadline();
