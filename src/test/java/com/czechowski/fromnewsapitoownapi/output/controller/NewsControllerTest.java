@@ -33,9 +33,13 @@ public class NewsControllerTest {
     private static final String SPORTS = "sports";
 
     private static final String NEWS_PL_SPORTS = "/news/" + PL + "/" + SPORTS;
+    private static final String NEWS_PL_SPORTS_WITH_PAGINATION = "/news/" + PL + "/" + SPORTS+"?page=2&pageSize=5";
     private static final String BAD_REQUEST_COUNTRY = "/news/pasdl/"+SPORTS;
     private static final String BAD_REQUEST_CATEGORY = "/news/"+PL+"/asd";
     private static final String BAD_REQUEST_COUNTRY_AND_CATEGORY = "/news/pasdl/asdsf";
+
+    private static final String BAD_REQUEST_PAGE_NOT_A_NUMBER = NEWS_PL_SPORTS+"?page=asd&pageSize=5";
+    private static final String BAD_REQUEST_PAGE_SIZE_NOT_A_NUMBER = NEWS_PL_SPORTS+"?page=2&pageSize=asd";
 
     private TopHeadline topHeadline;
 
@@ -97,6 +101,19 @@ public class NewsControllerTest {
     }
 
     @Test
+    public void getNewsByCountryAndCategoryWithPaginatin() throws Exception {
+
+        System.out.println(NEWS_PL_SPORTS_WITH_PAGINATION);
+
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(topHeadline);
+
+        mockMvc.perform(get(NEWS_PL_SPORTS_WITH_PAGINATION))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get(NEWS_PL_SPORTS_WITH_PAGINATION)).andReturn().getResponse();
+    }
+
+    @Test
     public void getNewsByCountryAndCategoryContentTest() throws Exception {
 
         when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(topHeadline);
@@ -145,6 +162,28 @@ public class NewsControllerTest {
                 .andExpect(status().isBadRequest());
 
         mockMvc.perform(get(BAD_REQUEST_COUNTRY_AND_CATEGORY)).andReturn().getResponse();
+    }
+
+    @Test
+    public void getNewsByCountryAndCategoryBadRequestPageParameterNotANumber() throws Exception {
+
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(topHeadline);
+
+        mockMvc.perform(get(BAD_REQUEST_PAGE_NOT_A_NUMBER))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(get(BAD_REQUEST_PAGE_NOT_A_NUMBER)).andReturn().getResponse();
+    }
+
+    @Test
+    public void getNewsByCountryAndCategoryBadRequestPageSizeParameterNotANumber() throws Exception {
+
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(topHeadline);
+
+        mockMvc.perform(get(BAD_REQUEST_PAGE_SIZE_NOT_A_NUMBER))
+                .andExpect(status().isBadRequest());
+
+        mockMvc.perform(get(BAD_REQUEST_PAGE_SIZE_NOT_A_NUMBER)).andReturn().getResponse();
     }
 
 }

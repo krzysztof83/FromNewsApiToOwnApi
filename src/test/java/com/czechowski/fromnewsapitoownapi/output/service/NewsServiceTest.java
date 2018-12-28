@@ -6,6 +6,7 @@ import com.czechowski.fromnewsapitoownapi.input.model.TopHeadline;
 import com.czechowski.fromnewsapitoownapi.input.service.TopHeadlineService;
 import com.czechowski.fromnewsapitoownapi.output.converter.ArticleToNewsArticleConverter;
 import com.czechowski.fromnewsapitoownapi.output.converter.TopHeadLineToNewsConverter;
+import com.czechowski.fromnewsapitoownapi.output.exception.PaginationParameterException;
 import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCategoryParameterException;
 import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCountryParameterException;
 import com.czechowski.fromnewsapitoownapi.output.model.News;
@@ -28,8 +29,11 @@ public class NewsServiceTest {
     private final String PL ="pl";
     private final String SPORTS ="sports";
 
-    private static final int DEFAULT_PAGE = 0;
-    private static final int DEFAULT_PAGE_SIZE = 20;
+    private static final String DEFAULT_PAGE = "0";
+    private static final String DEFAULT_PAGE_SIZE = "20";
+
+    private static final String PAGE_NOT_A_NUMBER_ = "as";
+    private static final String PAGE_SIZE_NOT_A_NUMBER= "asd";
 
     private NewsService newsService;
 
@@ -161,4 +165,44 @@ public class NewsServiceTest {
         assertEquals(PL, actual.getCountry());
         assertEquals(EMPTY_STRING, actual.getCategory());
     }
+
+    @Test(expected = PaginationParameterException.class)
+    public void findByCountryAndCategoryPageParameterNotANumber() {
+
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+
+        News actual = newsService.findByCountryAndCategory(PL, SPORTS,PAGE_NOT_A_NUMBER_, DEFAULT_PAGE_SIZE);
+
+        assertNotNull(actual);
+        assertEquals(PL, actual.getCountry());
+        assertEquals(SPORTS, actual.getCategory());
+
+    }
+
+    @Test(expected = PaginationParameterException.class)
+    public void findByCountryAndCategoryPageSizeParameterNotANumber() {
+
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+
+        News actual = newsService.findByCountryAndCategory(PL, SPORTS,DEFAULT_PAGE, PAGE_SIZE_NOT_A_NUMBER);
+
+        assertNotNull(actual);
+        assertEquals(PL, actual.getCountry());
+        assertEquals(SPORTS, actual.getCategory());
+
+    }
+
+    @Test(expected = PaginationParameterException.class)
+    public void findByCountryAndCategoryPageAndPageSIzeParameterNotANumber() {
+
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+
+        News actual = newsService.findByCountryAndCategory(PL, SPORTS,PAGE_NOT_A_NUMBER_, PAGE_SIZE_NOT_A_NUMBER);
+
+        assertNotNull(actual);
+        assertEquals(PL, actual.getCountry());
+        assertEquals(SPORTS, actual.getCategory());
+
+    }
+
 }

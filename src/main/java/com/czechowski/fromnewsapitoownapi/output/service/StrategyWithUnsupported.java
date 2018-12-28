@@ -1,5 +1,6 @@
 package com.czechowski.fromnewsapitoownapi.output.service;
 
+import com.czechowski.fromnewsapitoownapi.output.exception.PaginationParameterException;
 import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCategoryParameterException;
 import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCountryAndCategoryParameterException;
 import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCountryParameterException;
@@ -12,8 +13,8 @@ import org.springframework.util.StringUtils;
  */
 public class StrategyWithUnsupported {
 
-    public static void handleUnsupported(String country, String category) {
-        StrategyWithUnsupportedState state = determineUnsaportedState(country, category);
+    public static void handleUnsupported(String country, String category, String pageInString, String pageSizeInString) throws PaginationParameterException {
+        StrategyWithUnsupportedState state = determineUnsaportedState(country, category, pageInString, pageSizeInString);
 
         switch (state) {
             case OK_DO_SERVICE:
@@ -24,14 +25,23 @@ public class StrategyWithUnsupported {
                 throw new UnsupportedCategoryParameterException(category);
             case COUNTRY_AND_CATEGORYERROR:
                 throw new UnsupportedCountryAndCategoryParameterException(country, category);
+            case PAGINATION_ERROR:
+                throw new PaginationParameterException(pageInString, pageSizeInString);
         }
 
     }
 
-    private static StrategyWithUnsupportedState determineUnsaportedState(String country, String category) {
+    private static StrategyWithUnsupportedState determineUnsaportedState(String country, String category, String pageInString, String pageSizeInString) {
+
+        final boolean pageInStringIsANumber = checkIsParsableToInt(pageInString);
+        final boolean pageSizeInStringIsANumber = checkIsParsableToInt(pageSizeInString);
 
         final boolean unsupportedCountry = checkCountry(country);
         final boolean unsupportedCategory = checkCategory(category);
+
+        if (!pageInStringIsANumber || !pageSizeInStringIsANumber) {
+            return StrategyWithUnsupportedState.PAGINATION_ERROR;
+        }
 
         if (!unsupportedCountry && !unsupportedCategory)
             return StrategyWithUnsupportedState.OK_DO_SERVICE;
@@ -59,8 +69,17 @@ public class StrategyWithUnsupported {
         return (!StringUtils.isEmpty(category) && !CategorySource.getCategorySet().contains(category));
     }
 
+    private static boolean checkIsParsableToInt(String string) {
+        try {
+            double d = Integer.parseInt(string);
+        } catch (NumberFormatException | NullPointerException nfe) {
+            return false;
+        }
+        return true;
+    }
+
     private enum StrategyWithUnsupportedState {
-        COUNTRY_ERROR, CATEGORY_ERROR, COUNTRY_AND_CATEGORYERROR, OK_DO_SERVICE;
+        COUNTRY_ERROR, CATEGORY_ERROR, COUNTRY_AND_CATEGORYERROR, OK_DO_SERVICE, PAGINATION_ERROR;
     }
 
 }

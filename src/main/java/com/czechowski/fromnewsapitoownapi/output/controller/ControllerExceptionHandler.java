@@ -1,8 +1,10 @@
 package com.czechowski.fromnewsapitoownapi.output.controller;
 
+import com.czechowski.fromnewsapitoownapi.output.exception.PaginationParameterException;
 import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCategoryParameterException;
 import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCountryAndCategoryParameterException;
 import com.czechowski.fromnewsapitoownapi.output.exception.UnsupportedCountryParameterException;
+import com.czechowski.fromnewsapitoownapi.output.model.error.PaginationParameterError;
 import com.czechowski.fromnewsapitoownapi.output.model.error.UnsupportedCategoryError;
 import com.czechowski.fromnewsapitoownapi.output.model.error.UnsupportedCountryAndCategoryError;
 import com.czechowski.fromnewsapitoownapi.output.model.error.UnsupportedCountryError;
@@ -45,5 +47,14 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         UnsupportedCountryAndCategoryError unsupportedCountryAndCategoryError = new UnsupportedCountryAndCategoryError(exception);
 
         return new ResponseEntity<>(unsupportedCountryAndCategoryError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PaginationParameterException.class)
+    public ResponseEntity<?> handleUnsupportedCountry(PaginationParameterException exception) {
+
+        PaginationParameterError paginationParameterError = new PaginationParameterError(exception);
+
+        return new ResponseEntity<>(paginationParameterError, HttpStatus.BAD_REQUEST);
     }
 }
