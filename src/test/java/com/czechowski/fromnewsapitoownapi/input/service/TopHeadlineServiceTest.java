@@ -9,6 +9,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
 
+import java.util.stream.Stream;
+
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -20,12 +22,43 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 @RestClientTest(TopHeadlinesServiceImpl.class)
 public class TopHeadlineServiceTest {
 
-    public static final String NEWSAPI_V2_TOPHEDLINES_PL_SPORTS_APIKEY = "https://newsapi.org/v2/top-headlines?country=pl&category=sports&apiKey=c35f39498cda43069cdd4f3c24c4740a";
-    public static final String NEWSAPI_V2_TOPHEADLINES_NULL_SPORTS_APIKEY = "https://newsapi.org/v2/top-headlines?country&category=sports&apiKey=c35f39498cda43069cdd4f3c24c4740a";
-    public static final String NEWSAPI_V2_TOPHEDLINES_COUNTRY_NOT_CORRECT_SPORTS_APIKEY = "https://newsapi.org/v2/top-headlines?country=asd&category=sports&apiKey=c35f39498cda43069cdd4f3c24c4740a";
+    private static final String API_KEY = "apiKey=c35f39498cda43069cdd4f3c24c4740a";
 
-    public static final String NEWSAPI_V2_TOPHEDLINES_PL_NULL_APIKEY = "https://newsapi.org/v2/top-headlines?country=pl&category&apiKey=c35f39498cda43069cdd4f3c24c4740a";
-    public static final String NEWSAPI_V2_TOPHEDLINES_PL_CATEGORY_NOT_CORRECT_APIKEY = "https://newsapi.org/v2/top-headlines?country=pl&category=asd&apiKey=c35f39498cda43069cdd4f3c24c4740a";
+    private static final String NEWSAPI_V2_TOPHEADLINESS = "https://newsapi.org/v2/top-headlines?";
+    private static final String AND = "&";
+
+    private static final String COUNTRY = "country";
+    private static final String COUNTRY_PL = "country=pl";
+    private static final String COUNTRY_NOT_CORRECT = "country=asd";
+
+    private static final String CATEGORY = "category";
+    private static final String CATEGORY_SPORTS = "category=sports";
+    private static final String CATEGORY_NOT_CORRECT = "category=asd";
+
+    private static final String PAGE_DEFAULT = "page=0";
+    private static final String PAGE_NOT_DEFAULT = "page=5";
+
+    private static final String PAGE_SIZE_DEFAULT = "pageSize=20";
+    private static final String PAGE_SIZE_NOT_DEFAULT = "pageSize=7";
+
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
+    private static final String NEWSAPI_V2_TOPHEADLINES_NULL_SPORTS_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
+    private static final String NEWSAPI_V2_TOPHEADLINES_COUNTRY_NOT_CORRECT_SPORTS_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_NOT_CORRECT,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
+
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_NULL_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_CATEGORY_NOT_CORRECT_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_NOT_CORRECT,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
+
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY_NOT_DEFAULT_PAGE = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_NOT_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY_NOT_DEFAULT_PAGESIZE = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_NOT_DEFAULT+AND,API_KEY);
+
+    private final String PL = "pl";
+    private final String SPORTS = "sports";
+
+    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_PAGE_SIZE = 20;
+
+    private static final int NOT_DEFAULT_PAGE = 5;
+    private static final int NOT_DEFAULT_PAGESIZE = 7;
 
     @Autowired
     private TopHeadlineService topHeadlineService;
@@ -38,14 +71,14 @@ public class TopHeadlineServiceTest {
 
         String value = "{\"status\":\"ok\",\"totalResults\":\"1\",\"articles\":[{\"source\":{\"id\":null,\"name\":\"Probasket.pl\"},\"author\":null,\"title\":\"NBA: Gortat narzeka na Jokicia - probasket.pl\",\"description\":\"Marcin Gortat docenia talent lidera Denver Nuggets, ale wkurza go jedna rzecz, mianowicie skłonność Nikoli Jokicia do flopowania. Co na to zawodnik Bryłek? Nie\",\"url\":\"http://probasket.pl/nba-gortat-narzeka-na-jokicia/\",\"urlToImage\":\"http://probasket.pl/wp-content/uploads/2018/12/maxresdefault-51.jpg\",\"publishedAt\":\"2018-12-24T10:27:00Z\",\"content\":\"Marcin Gortat docenia talent lidera Denver Nuggets, ale wkurza go jedna rzecz, mianowicie skonno Nikoli Jokicia do flopowania. Co na to zawodnik Bryek? Nie mia adnego konkretnego komentarza do sów rodkowego Los Angeles Clippers. Nikola Joki po dwóch faulach t… [+1085 chars]\"}]}";
 
-        this.server.expect(requestTo(NEWSAPI_V2_TOPHEDLINES_PL_SPORTS_APIKEY))
+        this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY))
                 .andRespond(withSuccess(value, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory("pl", "sports");
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
 
         server.verify();
-        assertEquals("ok",topHeadline.getStatus());
-        assertEquals("1",topHeadline.getTotalResults());
+        assertEquals("ok", topHeadline.getStatus());
+        assertEquals("1", topHeadline.getTotalResults());
         assertEquals(1, topHeadline.getArticles().length);
     }
 
@@ -57,12 +90,12 @@ public class TopHeadlineServiceTest {
         this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_NULL_SPORTS_APIKEY))
                 .andRespond(withSuccess(value2, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(null, "sports");
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(null, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
 
         server.verify();
-        assertEquals("ok",topHeadline.getStatus());
-        assertEquals("3403",topHeadline.getTotalResults());
-        assertEquals(1,topHeadline.getArticles().length );
+        assertEquals("ok", topHeadline.getStatus());
+        assertEquals("3403", topHeadline.getTotalResults());
+        assertEquals(1, topHeadline.getArticles().length);
     }
 
     @Test
@@ -70,10 +103,10 @@ public class TopHeadlineServiceTest {
 
         String value3 = "{\"status\":\"ok\",\"totalResults\":0,\"articles\":[]}";
 
-        this.server.expect(requestTo(NEWSAPI_V2_TOPHEDLINES_COUNTRY_NOT_CORRECT_SPORTS_APIKEY))
+        this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_COUNTRY_NOT_CORRECT_SPORTS_APIKEY))
                 .andRespond(withSuccess(value3, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory("asd", "sports");
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory("asd", SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
 
         server.verify();
         assertEquals("ok", topHeadline.getStatus());
@@ -86,10 +119,10 @@ public class TopHeadlineServiceTest {
 
         String value4 = "{\"status\":\"ok\",\"totalResults\":28,\"articles\":[{\"source\":{\"id\":null,\"name\":\"Gazeta.pl\"},\"author\":\"mk\",\"title\":\"Grzyb z Puszczy Białowieskiej nadzieją w walce z rakiem. Naukowcy złożyli wniosek patentowy - Wiadomosci Gazeta.pl\",\"description\":\"Niepozorny grzyb, korzeniowiec sosnowy wyst�puj�cy m.in. w Puszczy Bia�owieskiej, mo�e pom�c w walce z nowotworem jelita grubego. Naukowcy z Uniwersytetu Medycznego w Bia�ymstoku i Politechniki Bia�ostockiej z�o�yli wniosek patentowy.\",\"url\":\"http://wiadomosci.gazeta.pl/wiadomosci/7,114883,24309074,grzyb-z-puszczy-bialowieskiej-nadzieja-w-walce-z-rakiem-naukowcy.html\",\"urlToImage\":\"https://bi.im-g.pl/im/60/2e/17/z24309088IER,Badania-nad-korzeniowcem-sosnowym.jpg\",\"publishedAt\":\"2018-12-25T12:28:00Z\",\"content\":\",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, W dniach 21-24 II 2019 papie ma si w Watykanie spotka z kardynaami, biskupami w sprawie pedofilii ksiy i zakonnikw. Dlatego potrzebna … [+427 chars]\"}]}";
 
-        this.server.expect(requestTo(NEWSAPI_V2_TOPHEDLINES_PL_NULL_APIKEY))
+        this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_NULL_APIKEY))
                 .andRespond(withSuccess(value4, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory("pl", null);
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
 
         server.verify();
         assertEquals("ok", topHeadline.getStatus());
@@ -103,15 +136,55 @@ public class TopHeadlineServiceTest {
 
         String value5 = "{\"status\":\"ok\",\"totalResults\":0,\"articles\":[]}";
 
-        this.server.expect(requestTo(NEWSAPI_V2_TOPHEDLINES_PL_CATEGORY_NOT_CORRECT_APIKEY))
+        this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_CATEGORY_NOT_CORRECT_APIKEY))
                 .andRespond(withSuccess(value5, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory("pl", "asd");
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, "asd", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
 
         server.verify();
         assertEquals("ok", topHeadline.getStatus());
         assertEquals("0", topHeadline.getTotalResults());
         assertEquals(0, topHeadline.getArticles().length);
+    }
+
+    @Test
+    public void findByCountryAndCategory_NotDefaultPage() {
+
+        String value5 = "{\"status\":\"ok\",\"totalResults\":0,\"articles\":[]}";
+
+        this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY_NOT_DEFAULT_PAGE))
+                .andRespond(withSuccess(value5, MediaType.APPLICATION_JSON));
+
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, NOT_DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+
+        server.verify();
+        assertEquals("ok", topHeadline.getStatus());
+        assertEquals("0", topHeadline.getTotalResults());
+        assertEquals(0, topHeadline.getArticles().length);
+    }
+
+    @Test
+    public void findByCountryAndCategory_NotDefaultPageSize() {
+
+        String value5 = "{\"status\":\"ok\",\"totalResults\":0,\"articles\":[]}";
+
+        this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY_NOT_DEFAULT_PAGESIZE))
+                .andRespond(withSuccess(value5, MediaType.APPLICATION_JSON));
+
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, NOT_DEFAULT_PAGESIZE);
+
+        server.verify();
+        assertEquals("ok", topHeadline.getStatus());
+        assertEquals("0", topHeadline.getTotalResults());
+        assertEquals(0, topHeadline.getArticles().length);
+    }
+
+    private static String createURI(String... strings) {
+        StringBuffer stringBuffer = new StringBuffer();
+
+        Stream.of(strings).forEach(s -> stringBuffer.append(s));
+
+        return stringBuffer.toString();
     }
 
 }

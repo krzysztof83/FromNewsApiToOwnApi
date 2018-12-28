@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -87,7 +88,7 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryStatusTest() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(topHeadline);
 
         mockMvc.perform(get(NEWS_PL_SPORTS))
                 .andExpect(status().isOk());
@@ -98,7 +99,7 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryContentTest() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(topHeadline);
 
         News news = topHeadLineToNewsConverter.convert(topHeadline, PL, SPORTS);
 
@@ -116,7 +117,7 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryBadRequestCountry() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(topHeadline);
 
         mockMvc.perform(get(BAD_REQUEST_COUNTRY))
                 .andExpect(status().isBadRequest());
@@ -127,7 +128,7 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryBadRequestCategory() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(topHeadline);
 
         mockMvc.perform(get(BAD_REQUEST_CATEGORY))
                 .andExpect(status().isBadRequest());
@@ -138,7 +139,7 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryBadRequestCountryAndCategory() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt())).thenReturn(topHeadline);
 
         mockMvc.perform(get(BAD_REQUEST_COUNTRY_AND_CATEGORY))
                 .andExpect(status().isBadRequest());
