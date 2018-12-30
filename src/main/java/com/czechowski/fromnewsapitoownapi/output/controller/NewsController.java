@@ -23,12 +23,14 @@ public class NewsController {
     @GetMapping("/{country}/{category}")
     @ResponseBody
     @ResponseStatus(HttpStatus.OK)
-    public News getNewsByCountryAndCategory(@PathVariable(name = "country") String country, @PathVariable(name = "category") String category, @RequestParam(value = "page", defaultValue = "0") String pageInString,
-                                            @RequestParam(value = "pageSize", defaultValue = "20") String pageSizeInString) {
+    public News getNewsByCountryAndCategory(@PathVariable(name = "country") String country,
+                                                            @PathVariable(name = "category") String category,
+                                                            @RequestParam(value = "page", defaultValue = "0") String pageInString,
+                                                            @RequestParam(value = "pageSize", defaultValue = "20") String pageSizeInString,
+                                                            @RequestParam(value = "q",defaultValue = "") String queryToSearch) {
 
+        return newsService.findByCountryAndCategory(country, category, pageInString, pageSizeInString, queryToSearch);
 
-
-        return newsService.findByCountryAndCategory(country, category, pageInString, pageSizeInString);
     }
 
 }

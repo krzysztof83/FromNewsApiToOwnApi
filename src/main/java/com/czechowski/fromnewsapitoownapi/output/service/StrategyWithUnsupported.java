@@ -79,7 +79,7 @@ public class StrategyWithUnsupported {
     }
 
     private enum StrategyWithUnsupportedState {
-        COUNTRY_ERROR, CATEGORY_ERROR, COUNTRY_AND_CATEGORYERROR, OK_DO_SERVICE, PAGINATION_ERROR;
+        COUNTRY_ERROR, CATEGORY_ERROR, COUNTRY_AND_CATEGORYERROR, OK_DO_SERVICE, PAGINATION_ERROR
     }
 
 }

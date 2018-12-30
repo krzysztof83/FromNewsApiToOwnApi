@@ -41,15 +41,23 @@ public class TopHeadlineServiceTest {
     private static final String PAGE_SIZE_DEFAULT = "pageSize=20";
     private static final String PAGE_SIZE_NOT_DEFAULT = "pageSize=7";
 
-    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
-    private static final String NEWSAPI_V2_TOPHEADLINES_NULL_SPORTS_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
-    private static final String NEWSAPI_V2_TOPHEADLINES_COUNTRY_NOT_CORRECT_SPORTS_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_NOT_CORRECT,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
+    private static final String QUERY = "q";
+    private static final String QUER_EMPTY = "q=";
+    private static final String QUERY_TEST = "q=test";
 
-    private static final String NEWSAPI_V2_TOPHEADLINES_PL_NULL_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
-    private static final String NEWSAPI_V2_TOPHEADLINES_PL_CATEGORY_NOT_CORRECT_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_NOT_CORRECT,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
 
-    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY_NOT_DEFAULT_PAGE = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_NOT_DEFAULT,AND,PAGE_SIZE_DEFAULT+AND,API_KEY);
-    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY_NOT_DEFAULT_PAGESIZE = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_NOT_DEFAULT+AND,API_KEY);
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT,AND,QUERY,AND,API_KEY);
+    private static final String NEWSAPI_V2_TOPHEADLINES_NULL_SPORTS_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT,AND, QUERY,AND,API_KEY);
+    private static final String NEWSAPI_V2_TOPHEADLINES_COUNTRY_NOT_CORRECT_SPORTS_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_NOT_CORRECT,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT,AND, QUERY,AND,API_KEY);
+
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_NULL_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT,AND, QUERY,AND,API_KEY);
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_CATEGORY_NOT_CORRECT_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_NOT_CORRECT,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT,AND, QUERY,AND,API_KEY);
+
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY_NOT_DEFAULT_PAGE = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_NOT_DEFAULT,AND,PAGE_SIZE_DEFAULT,AND, QUERY,AND,API_KEY);
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY_NOT_DEFAULT_PAGESIZE = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_NOT_DEFAULT,AND, QUERY,AND,API_KEY);
+
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_QUERY_TEST_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT,AND, QUERY_TEST,AND,API_KEY);
+    private static final String NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_QUERY_EMPTY_APIKEY = createURI(NEWSAPI_V2_TOPHEADLINESS,COUNTRY_PL,AND,CATEGORY_SPORTS,AND,PAGE_DEFAULT,AND,PAGE_SIZE_DEFAULT,AND, QUER_EMPTY,AND,API_KEY);
 
     private final String PL = "pl";
     private final String SPORTS = "sports";
@@ -59,6 +67,8 @@ public class TopHeadlineServiceTest {
 
     private static final int NOT_DEFAULT_PAGE = 5;
     private static final int NOT_DEFAULT_PAGESIZE = 7;
+
+    private static final String TEST = "test";
 
     @Autowired
     private TopHeadlineService topHeadlineService;
@@ -74,7 +84,7 @@ public class TopHeadlineServiceTest {
         this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY))
                 .andRespond(withSuccess(value, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
 
         server.verify();
         assertEquals("ok", topHeadline.getStatus());
@@ -90,7 +100,7 @@ public class TopHeadlineServiceTest {
         this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_NULL_SPORTS_APIKEY))
                 .andRespond(withSuccess(value2, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(null, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(null, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
 
         server.verify();
         assertEquals("ok", topHeadline.getStatus());
@@ -106,7 +116,7 @@ public class TopHeadlineServiceTest {
         this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_COUNTRY_NOT_CORRECT_SPORTS_APIKEY))
                 .andRespond(withSuccess(value3, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory("asd", SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory("asd", SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
 
         server.verify();
         assertEquals("ok", topHeadline.getStatus());
@@ -122,7 +132,7 @@ public class TopHeadlineServiceTest {
         this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_NULL_APIKEY))
                 .andRespond(withSuccess(value4, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
 
         server.verify();
         assertEquals("ok", topHeadline.getStatus());
@@ -139,7 +149,7 @@ public class TopHeadlineServiceTest {
         this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_CATEGORY_NOT_CORRECT_APIKEY))
                 .andRespond(withSuccess(value5, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, "asd", DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, "asd", DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
 
         server.verify();
         assertEquals("ok", topHeadline.getStatus());
@@ -150,34 +160,67 @@ public class TopHeadlineServiceTest {
     @Test
     public void findByCountryAndCategory_NotDefaultPage() {
 
-        String value5 = "{\"status\":\"ok\",\"totalResults\":0,\"articles\":[]}";
+        String value5 = "{\"status\":\"ok\",\"totalResults\":28,\"articles\":[{\"source\":{\"id\":null,\"name\":\"Gazeta.pl\"},\"author\":\"mk\",\"title\":\"Grzyb z Puszczy Białowieskiej nadzieją w walce z rakiem. Naukowcy złożyli wniosek patentowy - Wiadomosci Gazeta.pl\",\"description\":\"Niepozorny grzyb, korzeniowiec sosnowy wyst�puj�cy m.in. w Puszczy Bia�owieskiej, mo�e pom�c w walce z nowotworem jelita grubego. Naukowcy z Uniwersytetu Medycznego w Bia�ymstoku i Politechniki Bia�ostockiej z�o�yli wniosek patentowy.\",\"url\":\"http://wiadomosci.gazeta.pl/wiadomosci/7,114883,24309074,grzyb-z-puszczy-bialowieskiej-nadzieja-w-walce-z-rakiem-naukowcy.html\",\"urlToImage\":\"https://bi.im-g.pl/im/60/2e/17/z24309088IER,Badania-nad-korzeniowcem-sosnowym.jpg\",\"publishedAt\":\"2018-12-25T12:28:00Z\",\"content\":\",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, W dniach 21-24 II 2019 papie ma si w Watykanie spotka z kardynaami, biskupami w sprawie pedofilii ksiy i zakonnikw. Dlatego potrzebna … [+427 chars]\"}]}";
 
         this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY_NOT_DEFAULT_PAGE))
                 .andRespond(withSuccess(value5, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, NOT_DEFAULT_PAGE, DEFAULT_PAGE_SIZE);
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, NOT_DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
 
         server.verify();
         assertEquals("ok", topHeadline.getStatus());
-        assertEquals("0", topHeadline.getTotalResults());
-        assertEquals(0, topHeadline.getArticles().length);
+        assertEquals("28", topHeadline.getTotalResults());
+        assertEquals(1, topHeadline.getArticles().length);
     }
 
     @Test
     public void findByCountryAndCategory_NotDefaultPageSize() {
 
-        String value5 = "{\"status\":\"ok\",\"totalResults\":0,\"articles\":[]}";
+        String value5 = "{\"status\":\"ok\",\"totalResults\":28,\"articles\":[{\"source\":{\"id\":null,\"name\":\"Gazeta.pl\"},\"author\":\"mk\",\"title\":\"Grzyb z Puszczy Białowieskiej nadzieją w walce z rakiem. Naukowcy złożyli wniosek patentowy - Wiadomosci Gazeta.pl\",\"description\":\"Niepozorny grzyb, korzeniowiec sosnowy wyst�puj�cy m.in. w Puszczy Bia�owieskiej, mo�e pom�c w walce z nowotworem jelita grubego. Naukowcy z Uniwersytetu Medycznego w Bia�ymstoku i Politechniki Bia�ostockiej z�o�yli wniosek patentowy.\",\"url\":\"http://wiadomosci.gazeta.pl/wiadomosci/7,114883,24309074,grzyb-z-puszczy-bialowieskiej-nadzieja-w-walce-z-rakiem-naukowcy.html\",\"urlToImage\":\"https://bi.im-g.pl/im/60/2e/17/z24309088IER,Badania-nad-korzeniowcem-sosnowym.jpg\",\"publishedAt\":\"2018-12-25T12:28:00Z\",\"content\":\",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, W dniach 21-24 II 2019 papie ma si w Watykanie spotka z kardynaami, biskupami w sprawie pedofilii ksiy i zakonnikw. Dlatego potrzebna … [+427 chars]\"}]}";
 
         this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_APIKEY_NOT_DEFAULT_PAGESIZE))
                 .andRespond(withSuccess(value5, MediaType.APPLICATION_JSON));
 
-        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, NOT_DEFAULT_PAGESIZE);
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, NOT_DEFAULT_PAGESIZE,null);
 
         server.verify();
         assertEquals("ok", topHeadline.getStatus());
-        assertEquals("0", topHeadline.getTotalResults());
-        assertEquals(0, topHeadline.getArticles().length);
+        assertEquals("28", topHeadline.getTotalResults());
+        assertEquals(1, topHeadline.getArticles().length);
     }
+
+    @Test
+    public void findByCountryAndCategory_withSearchQuery() {
+
+        String value5 = "{\"status\":\"ok\",\"totalResults\":28,\"articles\":[{\"source\":{\"id\":null,\"name\":\"Gazeta.pl\"},\"author\":\"mk\",\"title\":\"Grzyb z Puszczy Białowieskiej nadzieją w walce z rakiem. Naukowcy złożyli wniosek patentowy - Wiadomosci Gazeta.pl\",\"description\":\"Niepozorny grzyb, korzeniowiec sosnowy wyst�puj�cy m.in. w Puszczy Bia�owieskiej, mo�e pom�c w walce z nowotworem jelita grubego. Naukowcy z Uniwersytetu Medycznego w Bia�ymstoku i Politechniki Bia�ostockiej z�o�yli wniosek patentowy.\",\"url\":\"http://wiadomosci.gazeta.pl/wiadomosci/7,114883,24309074,grzyb-z-puszczy-bialowieskiej-nadzieja-w-walce-z-rakiem-naukowcy.html\",\"urlToImage\":\"https://bi.im-g.pl/im/60/2e/17/z24309088IER,Badania-nad-korzeniowcem-sosnowym.jpg\",\"publishedAt\":\"2018-12-25T12:28:00Z\",\"content\":\",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, W dniach 21-24 II 2019 papie ma si w Watykanie spotka z kardynaami, biskupami w sprawie pedofilii ksiy i zakonnikw. Dlatego potrzebna … [+427 chars]\"}]}";
+
+        this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_QUERY_TEST_APIKEY))
+                .andRespond(withSuccess(value5, MediaType.APPLICATION_JSON));
+
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE,TEST);
+
+        server.verify();
+        assertEquals("ok", topHeadline.getStatus());
+        assertEquals("28", topHeadline.getTotalResults());
+        assertEquals(1, topHeadline.getArticles().length);
+    }
+
+    @Test
+    public void findByCountryAndCategory_searchQueryEmpty() {
+
+        String value5 = "{\"status\":\"ok\",\"totalResults\":28,\"articles\":[{\"source\":{\"id\":null,\"name\":\"Gazeta.pl\"},\"author\":\"mk\",\"title\":\"Grzyb z Puszczy Białowieskiej nadzieją w walce z rakiem. Naukowcy złożyli wniosek patentowy - Wiadomosci Gazeta.pl\",\"description\":\"Niepozorny grzyb, korzeniowiec sosnowy wyst�puj�cy m.in. w Puszczy Bia�owieskiej, mo�e pom�c w walce z nowotworem jelita grubego. Naukowcy z Uniwersytetu Medycznego w Bia�ymstoku i Politechniki Bia�ostockiej z�o�yli wniosek patentowy.\",\"url\":\"http://wiadomosci.gazeta.pl/wiadomosci/7,114883,24309074,grzyb-z-puszczy-bialowieskiej-nadzieja-w-walce-z-rakiem-naukowcy.html\",\"urlToImage\":\"https://bi.im-g.pl/im/60/2e/17/z24309088IER,Badania-nad-korzeniowcem-sosnowym.jpg\",\"publishedAt\":\"2018-12-25T12:28:00Z\",\"content\":\",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,, W dniach 21-24 II 2019 papie ma si w Watykanie spotka z kardynaami, biskupami w sprawie pedofilii ksiy i zakonnikw. Dlatego potrzebna … [+427 chars]\"}]}";
+
+        this.server.expect(requestTo(NEWSAPI_V2_TOPHEADLINES_PL_SPORTS_QUERY_EMPTY_APIKEY))
+                .andRespond(withSuccess(value5, MediaType.APPLICATION_JSON));
+
+        TopHeadline topHeadline = this.topHeadlineService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE,"");
+
+        server.verify();
+        assertEquals("ok", topHeadline.getStatus());
+        assertEquals("28", topHeadline.getTotalResults());
+        assertEquals(1, topHeadline.getArticles().length);
+    }
+
 
     private static String createURI(String... strings) {
         StringBuffer stringBuffer = new StringBuffer();

@@ -7,5 +7,5 @@ import com.czechowski.fromnewsapitoownapi.input.model.TopHeadline;
  */
 public interface TopHeadlineService {
 
-    TopHeadline findByCountryAndCategory(String country, String category, int page, int pageSize);
+    TopHeadline findByCountryAndCategory(String country, String category, int page, int pageSize, String queryToSearch);
 }

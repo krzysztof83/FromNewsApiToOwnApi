@@ -7,5 +7,5 @@ import com.czechowski.fromnewsapitoownapi.output.model.News;
  */
 public interface NewsService {
 
-    News findByCountryAndCategory(String country, String category, String page, String pageSize);
+    News findByCountryAndCategory(String country, String category, String page, String pageSize, String queryToSearch);
 }

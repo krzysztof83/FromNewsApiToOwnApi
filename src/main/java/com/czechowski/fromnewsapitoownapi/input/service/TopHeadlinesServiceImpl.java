@@ -21,10 +21,9 @@ public class TopHeadlinesServiceImpl implements TopHeadlineService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public TopHeadline findByCountryAndCategory(String country, String category, int page, int pageSize) {
+    public TopHeadline findByCountryAndCategory(String country, String category, int page, int pageSize, String queryToSearch) {
 
-        String uri = getUriWithPagination(country, category, page, pageSize);
-
+        String uri = getUriWithPagination(country, category, page, pageSize, queryToSearch);
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
         HttpEntity<?> entity = new HttpEntity<>(headers);
@@ -35,14 +34,15 @@ public class TopHeadlinesServiceImpl implements TopHeadlineService {
         return responseObj2.getBody();
     }
 
-    private String getUriWithPagination(String country, String category, int page, int pageSize) {
+    private String getUriWithPagination(String country, String category, int page, int pageSize, String queryToSearch) {
         return UriComponentsBuilder.fromHttpUrl("https://newsapi.org/v2/top-headlines")
                 .queryParam("country", country)
                 .queryParam("category", category)
                 .queryParam("page", page)
                 .queryParam("pageSize", pageSize)
-                .queryParam("apiKey", API_KEY).toUriString();
+                .queryParam("q",queryToSearch)
+                .queryParam("apiKey", API_KEY)
+                .encode().toUriString();
     }
-
 
 }

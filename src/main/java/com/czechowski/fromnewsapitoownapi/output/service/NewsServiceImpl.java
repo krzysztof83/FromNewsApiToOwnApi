@@ -20,14 +20,14 @@ public class NewsServiceImpl implements NewsService {
         this.topHeadLineToNewsConverter = topHeadLineToNewsConverter;
     }
 
-    public News findByCountryAndCategory(String country, String category, String pageInString, String pageSizeInString)  {
+    public News findByCountryAndCategory(String country, String category, String pageInString, String pageSizeInString, String queryToSearch)  {
 
         StrategyWithUnsupported.handleUnsupported(country, category, pageInString, pageSizeInString);
 
         int page = Integer.valueOf(pageInString);
         int pageSize = Integer.valueOf(pageSizeInString);
 
-        TopHeadline topHeadline = topHeadlineService.findByCountryAndCategory(country, category, page, pageSize);
+        TopHeadline topHeadline = topHeadlineService.findByCountryAndCategory(country, category, page, pageSize, queryToSearch);
 
         return topHeadLineToNewsConverter.convert(topHeadline, country, category);
     }
