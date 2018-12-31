@@ -6,6 +6,8 @@ import com.czechowski.fromnewsapitoownapi.input.model.TopHeadline;
 import com.czechowski.fromnewsapitoownapi.input.service.TopHeadlineService;
 import com.czechowski.fromnewsapitoownapi.output.converter.ArticleToNewsArticleConverter;
 import com.czechowski.fromnewsapitoownapi.output.converter.TopHeadLineToNewsConverter;
+import com.czechowski.fromnewsapitoownapi.output.decorator.NewsDecorator;
+import com.czechowski.fromnewsapitoownapi.output.decorator.NewsDecoratorTotalResults;
 import com.czechowski.fromnewsapitoownapi.output.model.News;
 import com.czechowski.fromnewsapitoownapi.output.service.NewsService;
 import com.czechowski.fromnewsapitoownapi.output.service.NewsServiceImpl;
@@ -29,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author <a href="mailto:k.czechowski83@gmail.com">Krzysztof Czechowski</a>
  */
-public class NewsControllerTest {
+public class NewsImplControllerTest {
 
     private static final String PL = "pl";
     private static final String SPORTS = "sports";
@@ -37,15 +39,15 @@ public class NewsControllerTest {
 
 
     private static final String NEWS_PL_SPORTS = "/news/" + PL + "/" + SPORTS;
-    private static final String NEWS_PL_SPORTS_WITH_PAGINATION = "/news/" + PL + "/" + SPORTS+"?page=2&pageSize=5";
-    private static final String BAD_REQUEST_COUNTRY = "/news/pasdl/"+SPORTS;
-    private static final String BAD_REQUEST_CATEGORY = "/news/"+PL+"/asd";
+    private static final String NEWS_PL_SPORTS_WITH_PAGINATION = "/news/" + PL + "/" + SPORTS + "?page=2&pageSize=5";
+    private static final String BAD_REQUEST_COUNTRY = "/news/pasdl/" + SPORTS;
+    private static final String BAD_REQUEST_CATEGORY = "/news/" + PL + "/asd";
     private static final String BAD_REQUEST_COUNTRY_AND_CATEGORY = "/news/pasdl/asdsf";
 
-    private static final String BAD_REQUEST_PAGE_NOT_A_NUMBER = NEWS_PL_SPORTS+"?page=asd&pageSize=5";
-    private static final String BAD_REQUEST_PAGE_SIZE_NOT_A_NUMBER = NEWS_PL_SPORTS+"?page=2&pageSize=asd";
+    private static final String BAD_REQUEST_PAGE_NOT_A_NUMBER = NEWS_PL_SPORTS + "?page=asd&pageSize=5";
+    private static final String BAD_REQUEST_PAGE_SIZE_NOT_A_NUMBER = NEWS_PL_SPORTS + "?page=2&pageSize=asd";
 
-    private static final String NEWS_PL_SPORTS_QUERY = "/news/" + PL + "/" + SPORTS+"?q="+DESCRIPTION;
+    private static final String NEWS_PL_SPORTS_QUERY = "/news/" + PL + "/" + SPORTS + "?q=" + DESCRIPTION;
 
     private TopHeadline topHeadline;
 
@@ -98,13 +100,12 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryStatusTest() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
-        System.out.println(NEWS_PL_SPORTS);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
+
         mockMvc.perform(get(NEWS_PL_SPORTS))
                 .andExpect(status().isOk());
 
-        MockHttpServletResponse response = mockMvc.perform(get(NEWS_PL_SPORTS)).andReturn().getResponse();
-        System.out.println(response.getContentAsString());
+        mockMvc.perform(get(NEWS_PL_SPORTS)).andReturn().getResponse();
     }
 
     @Test
@@ -112,7 +113,7 @@ public class NewsControllerTest {
 
         System.out.println(NEWS_PL_SPORTS_WITH_PAGINATION);
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
 
         mockMvc.perform(get(NEWS_PL_SPORTS_WITH_PAGINATION))
                 .andExpect(status().isOk());
@@ -123,25 +124,30 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryContentTest() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
 
         News news = topHeadLineToNewsConverter.convert(topHeadline, PL, SPORTS);
+        int totalResults = Integer.valueOf(topHeadline.getTotalResults());
+        NewsDecorator newsDecorator = new NewsDecoratorTotalResults(totalResults, news);
 
         ObjectMapper mapper = new ObjectMapper();
 
-        String jsonString = mapper.writeValueAsString(news);
+        String jsonString = mapper.writeValueAsString(newsDecorator);
+        System.out.println(jsonString);
+
+        MockHttpServletResponse response = mockMvc.perform(get(NEWS_PL_SPORTS)).andReturn().getResponse();
+        System.out.println(response.getContentAsString());
 
         mockMvc.perform(get(NEWS_PL_SPORTS))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonString));
 
-        mockMvc.perform(get(NEWS_PL_SPORTS)).andReturn().getResponse();
     }
 
     @Test
     public void getNewsByCountryAndCategoryBadRequestCountry() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
 
         mockMvc.perform(get(BAD_REQUEST_COUNTRY))
                 .andExpect(status().isBadRequest());
@@ -152,7 +158,7 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryBadRequestCategory() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
 
         mockMvc.perform(get(BAD_REQUEST_CATEGORY))
                 .andExpect(status().isBadRequest());
@@ -163,7 +169,7 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryBadRequestCountryAndCategory() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
 
         mockMvc.perform(get(BAD_REQUEST_COUNTRY_AND_CATEGORY))
                 .andExpect(status().isBadRequest());
@@ -174,7 +180,7 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryBadRequestPageParameterNotANumber() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
 
         mockMvc.perform(get(BAD_REQUEST_PAGE_NOT_A_NUMBER))
                 .andExpect(status().isBadRequest());
@@ -185,7 +191,7 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategoryBadRequestPageSizeParameterNotANumber() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
 
         mockMvc.perform(get(BAD_REQUEST_PAGE_SIZE_NOT_A_NUMBER))
                 .andExpect(status().isBadRequest());
@@ -197,13 +203,15 @@ public class NewsControllerTest {
     @Test
     public void getNewsByCountryAndCategory_WithQueryContentTest() throws Exception {
 
-        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
 
         News news = topHeadLineToNewsConverter.convert(topHeadline, PL, SPORTS);
+        int totalResults = Integer.valueOf(topHeadline.getTotalResults());
+        NewsDecorator newsDecorator = new NewsDecoratorTotalResults(totalResults, news);
 
         ObjectMapper mapper = new ObjectMapper();
 
-        String jsonString = mapper.writeValueAsString(news);
+        String jsonString = mapper.writeValueAsString(newsDecorator);
 
         mockMvc.perform(get(NEWS_PL_SPORTS_QUERY))
                 .andExpect(status().isOk())

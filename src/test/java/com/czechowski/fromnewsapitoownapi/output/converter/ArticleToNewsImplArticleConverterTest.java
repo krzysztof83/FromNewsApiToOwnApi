@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 /**
  * @author <a href="mailto:k.czechowski83@gmail.com">Krzysztof Czechowski</a>
  */
-public class ArticleToNewsArticleConverterTest {
+public class ArticleToNewsImplArticleConverterTest {
 
     Article FULL_ARTICLE_OBJECT;
 

@@ -22,19 +22,19 @@ import static org.mockito.Mockito.when;
 /**
  * @author <a href="mailto:k.czechowski83@gmail.com">Krzysztof Czechowski</a>
  */
-public class NewsServiceTest {
+public class NewsImplServiceTest {
 
-    private final String EMPTY_STRING ="";
-    private final String PL ="pl";
-    private final String SPORTS ="sports";
+    private final String EMPTY_STRING = "";
+    private final String PL = "pl";
+    private final String SPORTS = "sports";
 
     private static final String DEFAULT_PAGE = "0";
     private static final String DEFAULT_PAGE_SIZE = "20";
 
     private static final String PAGE_NOT_A_NUMBER_ = "as";
-    private static final String PAGE_SIZE_NOT_A_NUMBER= "asd";
+    private static final String PAGE_SIZE_NOT_A_NUMBER = "asd";
 
-    private static final String QUERY_TO_SEARCH = "Małysz";
+    private static final String QUERY_TO_SEARCH = "description to test";
 
 
     private NewsService newsService;
@@ -61,7 +61,7 @@ public class NewsServiceTest {
 
         article.setAuthor("author");
         article.setTitle("title");
-        article.setDescription("description");
+        article.setDescription("description to test");
         article.setUrl("url");
         article.setUrlToImage("uriToImage");
         article.setPublishedAt("2018-12-25T12:58:29Z");
@@ -79,9 +79,9 @@ public class NewsServiceTest {
     @Test
     public void findByCountryAndCategory() {
 
-        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), nullable(String.class))).thenReturn(FULL_TOPHEADLINES_OBJECT);
 
-        News actual = newsService.findByCountryAndCategory(PL, SPORTS,DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
+        News actual = newsService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE, null);
 
         assertNotNull(actual);
         assertEquals(PL, actual.getCountry());
@@ -92,10 +92,10 @@ public class NewsServiceTest {
     @Test
     public void findByCountryAndCategoryCountryNull() {
 
-        when(topHeadlinesService.findByCountryAndCategory(nullable(String.class), anyString(),anyInt(),anyInt(),anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+        when(topHeadlinesService.findByCountryAndCategory(nullable(String.class), anyString(), anyInt(), anyInt(), anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
 
 
-        News actual = newsService.findByCountryAndCategory(null, SPORTS,DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
+        News actual = newsService.findByCountryAndCategory(null, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE, "");
 
         assertNotNull(actual);
         assertNull(actual.getCountry());
@@ -105,10 +105,10 @@ public class NewsServiceTest {
     @Test
     public void findByCountryAndCategoryCountryEmpty() {
 
-        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
 
 
-        News actual = newsService.findByCountryAndCategory(EMPTY_STRING, SPORTS,DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
+        News actual = newsService.findByCountryAndCategory(EMPTY_STRING, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE, "");
 
         assertNotNull(actual);
         assertEquals(EMPTY_STRING, actual.getCountry());
@@ -118,10 +118,10 @@ public class NewsServiceTest {
     @Test
     public void findByCountryAndCategoryCategoryNull() {
 
-        when(topHeadlinesService.findByCountryAndCategory(anyString(), nullable(String.class),anyInt(),anyInt(),anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), nullable(String.class), anyInt(), anyInt(), anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
 
 
-        News actual = newsService.findByCountryAndCategory(PL, null,DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
+        News actual = newsService.findByCountryAndCategory(PL, null, DEFAULT_PAGE, DEFAULT_PAGE_SIZE, "");
 
         assertNotNull(actual);
         assertEquals(PL, actual.getCountry());
@@ -131,9 +131,9 @@ public class NewsServiceTest {
     @Test
     public void findByCountryAndCategoryCategoryEmpty() {
 
-        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
 
-        News actual = newsService.findByCountryAndCategory(PL, EMPTY_STRING,DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
+        News actual = newsService.findByCountryAndCategory(PL, EMPTY_STRING, DEFAULT_PAGE, DEFAULT_PAGE_SIZE, "");
 
         assertNotNull(actual);
         assertEquals(PL, actual.getCountry());
@@ -145,9 +145,9 @@ public class NewsServiceTest {
 
         TopHeadline topHeadline = new TopHeadline();
 
-        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
 
-        News actual = newsService.findByCountryAndCategory("asd", SPORTS,DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
+        News actual = newsService.findByCountryAndCategory("asd", SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE, "");
 
         assertNotNull(actual);
         assertEquals(EMPTY_STRING, actual.getCountry());
@@ -159,9 +159,9 @@ public class NewsServiceTest {
 
         TopHeadline topHeadline = new TopHeadline();
 
-        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(topHeadline);
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
 
-        News actual = newsService.findByCountryAndCategory(PL, "asd",DEFAULT_PAGE, DEFAULT_PAGE_SIZE,null);
+        News actual = newsService.findByCountryAndCategory(PL, "asd", DEFAULT_PAGE, DEFAULT_PAGE_SIZE, "");
 
         assertNotNull(actual);
         assertEquals(PL, actual.getCountry());
@@ -171,9 +171,9 @@ public class NewsServiceTest {
     @Test(expected = PaginationParameterException.class)
     public void findByCountryAndCategoryPageParameterNotANumber() {
 
-        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
 
-        News actual = newsService.findByCountryAndCategory(PL, SPORTS,PAGE_NOT_A_NUMBER_, DEFAULT_PAGE_SIZE,null);
+        News actual = newsService.findByCountryAndCategory(PL, SPORTS, PAGE_NOT_A_NUMBER_, DEFAULT_PAGE_SIZE, "");
 
         assertNotNull(actual);
         assertEquals(PL, actual.getCountry());
@@ -184,9 +184,9 @@ public class NewsServiceTest {
     @Test(expected = PaginationParameterException.class)
     public void findByCountryAndCategoryPageSizeParameterNotANumber() {
 
-        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
 
-        News actual = newsService.findByCountryAndCategory(PL, SPORTS,DEFAULT_PAGE, PAGE_SIZE_NOT_A_NUMBER,null);
+        News actual = newsService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, PAGE_SIZE_NOT_A_NUMBER, "");
 
         assertNotNull(actual);
         assertEquals(PL, actual.getCountry());
@@ -197,13 +197,27 @@ public class NewsServiceTest {
     @Test(expected = PaginationParameterException.class)
     public void findByCountryAndCategoryPageAndPageSIzeParameterNotANumber() {
 
-        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(),anyInt(),anyInt(),anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
 
-        News actual = newsService.findByCountryAndCategory(PL, SPORTS,PAGE_NOT_A_NUMBER_, PAGE_SIZE_NOT_A_NUMBER,null);
+        News actual = newsService.findByCountryAndCategory(PL, SPORTS, PAGE_NOT_A_NUMBER_, PAGE_SIZE_NOT_A_NUMBER, "");
 
         assertNotNull(actual);
         assertEquals(PL, actual.getCountry());
         assertEquals(SPORTS, actual.getCategory());
+
+    }
+
+    @Test
+    public void findByCountryAndCategoryWithQuery() {
+
+        when(topHeadlinesService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(FULL_TOPHEADLINES_OBJECT);
+
+        News actual = newsService.findByCountryAndCategory(PL, SPORTS, DEFAULT_PAGE, DEFAULT_PAGE_SIZE, QUERY_TO_SEARCH);
+
+        assertNotNull(actual);
+        assertEquals(PL, actual.getCountry());
+        assertEquals(SPORTS, actual.getCategory());
+        assertTrue(actual.getResponseArticles().get(0).getDescription().contains(QUERY_TO_SEARCH));
 
     }
 

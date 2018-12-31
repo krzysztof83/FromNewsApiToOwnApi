@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 /**
  * @author <a href="mailto:k.czechowski83@gmail.com">Krzysztof Czechowski</a>
  */
-public class TopHeadLineToNewsConverterTest {
+public class TopHeadLineToNewsImplConverterTest {
 
     private TopHeadline TOP_HEADLINE;
     private String PL = "pl";

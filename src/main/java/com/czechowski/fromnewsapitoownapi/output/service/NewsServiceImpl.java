@@ -3,6 +3,8 @@ package com.czechowski.fromnewsapitoownapi.output.service;
 import com.czechowski.fromnewsapitoownapi.input.model.TopHeadline;
 import com.czechowski.fromnewsapitoownapi.input.service.TopHeadlineService;
 import com.czechowski.fromnewsapitoownapi.output.converter.TopHeadLineToNewsConverter;
+import com.czechowski.fromnewsapitoownapi.output.decorator.NewsDecorator;
+import com.czechowski.fromnewsapitoownapi.output.decorator.NewsDecoratorTotalResults;
 import com.czechowski.fromnewsapitoownapi.output.model.News;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,7 @@ public class NewsServiceImpl implements NewsService {
         this.topHeadLineToNewsConverter = topHeadLineToNewsConverter;
     }
 
-    public News findByCountryAndCategory(String country, String category, String pageInString, String pageSizeInString, String queryToSearch)  {
+    public NewsDecorator findByCountryAndCategory(String country, String category, String pageInString, String pageSizeInString, String queryToSearch)  {
 
         StrategyWithUnsupported.handleUnsupported(country, category, pageInString, pageSizeInString);
 
@@ -29,6 +31,12 @@ public class NewsServiceImpl implements NewsService {
 
         TopHeadline topHeadline = topHeadlineService.findByCountryAndCategory(country, category, page, pageSize, queryToSearch);
 
-        return topHeadLineToNewsConverter.convert(topHeadline, country, category);
+        News news = topHeadLineToNewsConverter.convert(topHeadline, country, category);
+
+        int totalResults = Integer.valueOf(topHeadline.getTotalResults());
+
+        NewsDecorator newsDecorator = new NewsDecoratorTotalResults(totalResults, news);
+
+        return newsDecorator;
     }
 }

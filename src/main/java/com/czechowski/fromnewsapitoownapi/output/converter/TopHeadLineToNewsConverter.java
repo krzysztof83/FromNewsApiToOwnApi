@@ -2,6 +2,7 @@ package com.czechowski.fromnewsapitoownapi.output.converter;
 
 import com.czechowski.fromnewsapitoownapi.input.model.TopHeadline;
 import com.czechowski.fromnewsapitoownapi.output.model.News;
+import com.czechowski.fromnewsapitoownapi.output.model.NewsImpl;
 import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
@@ -20,7 +21,7 @@ public class TopHeadLineToNewsConverter {
     }
 
     public News convert(TopHeadline topHeadline, String country, String category) {
-        News news = new News();
+        News news = new NewsImpl();
         news.setCountry(country);
         news.setCategory(category);
 
