@@ -20,6 +20,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -220,5 +221,35 @@ public class NewsImplControllerTest {
         MockHttpServletResponse response = mockMvc.perform(get(NEWS_PL_SPORTS_QUERY)).andReturn().getResponse();
         assertTrue(response.getContentAsString().contains(DESCRIPTION));
     }
+
+    @Test
+    public void getNewsByCountryAndCategoryHeaderLinksFirstAndNextAndPrevAndLastTest() throws Exception {
+
+        topHeadline.setTotalResults("21");
+        when(topHeadlineService.findByCountryAndCategory(anyString(), anyString(), anyInt(), anyInt(), anyString())).thenReturn(topHeadline);
+
+        mockMvc.perform(get(NEWS_PL_SPORTS_WITH_PAGINATION))
+                .andExpect(status().isOk());
+
+        MockHttpServletResponse response = mockMvc.perform(get(NEWS_PL_SPORTS_WITH_PAGINATION)).andReturn().getResponse();
+
+        String first = response.getHeader("first");
+        String next = response.getHeader("next");
+        String prev = response.getHeader("prev");
+        String last = response.getHeader("last");
+
+
+        String firstLink = "http://localhost/news/pl/sports?page=0&pageSize=5&q=";
+        String nextLink = "http://localhost/news/pl/sports?page=3&pageSize=5&q=";
+        String prevLink = "http://localhost/news/pl/sports?page=1&pageSize=5&q=";
+        String lastLink = "http://localhost/news/pl/sports?page=5&pageSize=5&q=";
+
+        assertEquals(firstLink, first);
+        assertEquals(nextLink, next);
+        assertEquals(prevLink, prev);
+        assertEquals(lastLink, last);
+    }
+
+
 
 }
