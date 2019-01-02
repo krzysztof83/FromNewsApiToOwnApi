@@ -1,5 +1,6 @@
 package com.czechowski.fromnewsapitoownapi.input.service;
 
+import com.czechowski.fromnewsapitoownapi.input.config.NewsApiOrgConfig;
 import com.czechowski.fromnewsapitoownapi.input.model.TopHeadline;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
@@ -13,12 +14,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class TopHeadlinesServiceImpl implements TopHeadlineService {
 
-    static final String API_KEY = "c35f39498cda43069cdd4f3c24c4740a";
-
     private RestTemplate restTemplate;
 
-    public TopHeadlinesServiceImpl(RestTemplateBuilder restTemplateBuilder) {
+    NewsApiOrgConfig newsApiOrgConfig;
+
+    public TopHeadlinesServiceImpl(RestTemplateBuilder restTemplateBuilder, NewsApiOrgConfig newsApiOrgConfig) {
         this.restTemplate = restTemplateBuilder.build();
+        this.newsApiOrgConfig = newsApiOrgConfig;
+
     }
 
     public TopHeadline findByCountryAndCategory(String country, String category, int page, int pageSize, String queryToSearch) {
@@ -35,13 +38,14 @@ public class TopHeadlinesServiceImpl implements TopHeadlineService {
     }
 
     private String getUriWithPagination(String country, String category, int page, int pageSize, String queryToSearch) {
-        return UriComponentsBuilder.fromHttpUrl("https://newsapi.org/v2/top-headlines")
+
+        return UriComponentsBuilder.fromHttpUrl(newsApiOrgConfig.getNewsApiUrl().trim())
                 .queryParam("country", country)
                 .queryParam("category", category)
                 .queryParam("page", page)
                 .queryParam("pageSize", pageSize)
                 .queryParam("q",queryToSearch)
-                .queryParam("apiKey", API_KEY)
+                .queryParam("apiKey", newsApiOrgConfig.getApiKey().trim())
                 .encode().toUriString();
     }
 
