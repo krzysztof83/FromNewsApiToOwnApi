@@ -1,9 +1,11 @@
 package com.czechowski.fromnewsapitoownapi.output.exception;
 
+import java.io.Serializable;
+
 /**
  * @author <a href="mailto:k.czechowski83@gmail.com">Krzysztof Czechowski</a>
  */
-public class UnsupportedCountryAndCategoryParameterException extends RuntimeException {
+public class UnsupportedCountryAndCategoryParameterException extends RuntimeException  implements Serializable {
 
     private String country;
     private String category;
