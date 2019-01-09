@@ -239,10 +239,10 @@ public class NewsImplControllerTest {
         String last = response.getHeader("last");
 
 
-        String firstLink = "http://localhost/news/pl/sports?page=0&pageSize=5&q=";
-        String nextLink = "http://localhost/news/pl/sports?page=3&pageSize=5&q=";
-        String prevLink = "http://localhost/news/pl/sports?page=1&pageSize=5&q=";
-        String lastLink = "http://localhost/news/pl/sports?page=5&pageSize=5&q=";
+        String firstLink = "http://localhost/news/pl/sports?page=0&pageSize=5";
+        String nextLink = "http://localhost/news/pl/sports?page=3&pageSize=5";
+        String prevLink = "http://localhost/news/pl/sports?page=1&pageSize=5";
+        String lastLink = "http://localhost/news/pl/sports?page=5&pageSize=5";
 
         assertEquals(firstLink, first);
         assertEquals(nextLink, next);

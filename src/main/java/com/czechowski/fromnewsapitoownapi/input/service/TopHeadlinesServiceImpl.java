@@ -1,12 +1,12 @@
 package com.czechowski.fromnewsapitoownapi.input.service;
 
+import com.czechowski.fromnewsapitoownapi.helper.UriComponentBuliderWithoutNull;
 import com.czechowski.fromnewsapitoownapi.input.config.NewsApiOrgConfig;
 import com.czechowski.fromnewsapitoownapi.input.model.TopHeadline;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * @author <a href="mailto:k.czechowski83@gmail.com">Krzysztof Czechowski</a>
@@ -39,7 +39,7 @@ public class TopHeadlinesServiceImpl implements TopHeadlineService {
 
     private String getUriWithPagination(String country, String category, int page, int pageSize, String queryToSearch) {
 
-        return UriComponentsBuilder.fromHttpUrl(newsApiOrgConfig.getNewsApiUrl().trim())
+        return UriComponentBuliderWithoutNull.fromHttpUrl(newsApiOrgConfig.getNewsApiUrl().trim())
                 .queryParam("country", country)
                 .queryParam("category", category)
                 .queryParam("page", page)

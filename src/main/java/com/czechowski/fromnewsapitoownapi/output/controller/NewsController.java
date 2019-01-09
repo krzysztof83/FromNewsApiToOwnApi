@@ -1,5 +1,6 @@
 package com.czechowski.fromnewsapitoownapi.output.controller;
 
+import com.czechowski.fromnewsapitoownapi.helper.UriComponentBuliderWithoutNull;
 import com.czechowski.fromnewsapitoownapi.output.decorator.NewsDecorator;
 import com.czechowski.fromnewsapitoownapi.output.model.News;
 import com.czechowski.fromnewsapitoownapi.output.service.NewsService;
@@ -8,7 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -82,7 +82,7 @@ public class NewsController {
 
     private String createLinks(int page, int pageSize, String requestUrl, String queryToSearch) {
 
-        return UriComponentsBuilder.fromHttpUrl(requestUrl)
+        return UriComponentBuliderWithoutNull.fromHttpUrl(requestUrl)
                 .queryParam("page", page)
                 .queryParam("pageSize", pageSize)
                 .queryParam("q", queryToSearch)
