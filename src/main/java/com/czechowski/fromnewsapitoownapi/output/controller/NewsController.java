@@ -39,8 +39,8 @@ public class NewsController {
 
         HttpHeaders responseHeaders = new HttpHeaders();
 
-        int page = Integer.valueOf(pageInString);
-        int pageSize = Integer.valueOf(pageSizeInString);
+        int page = Integer.parseInt(pageInString);
+        int pageSize = Integer.parseInt(pageSizeInString);
 
         addNavigationLinksToHeadder(responseHeaders, newsDecorator.getTotalResults(), page, pageSize, request.getRequestURL().toString(), queryToSearch);
 
